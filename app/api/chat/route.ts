@@ -18,14 +18,14 @@ Keep answers concise, practical and friendly. Use simple language — not everyo
 If something requires a professional mechanic, say so clearly.`
 
   try {
-    const res = await fetch('https://api.x.ai/v1/chat/completions', {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.GROK_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'grok-3-mini',
+        model: 'llama-3.3-70b-versatile',
         max_tokens: 400,
         messages: [
           { role: 'system', content: systemPrompt },
