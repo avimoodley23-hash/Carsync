@@ -93,7 +93,7 @@ export default function FuelPage() {
     if (pairs.length > 0) avgEconomy = pairs.reduce((s, v) => s + v, 0) / pairs.length
   }
 
-  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999999' }}>Loading...</div>
+  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666666' }}>Loading...</div>
 
   return (
     <div style={{ minHeight: '100vh', paddingBottom: 100 }}>
@@ -114,25 +114,25 @@ export default function FuelPage() {
       <div style={{ padding: '0 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
         {[
           { label: 'Total Spent', value: `R${totalSpent.toFixed(0)}`, sub: `${logs.length} fill-ups`, color: '#111111' },
-          { label: 'Fuel Economy', value: avgEconomy > 0 ? `${avgEconomy.toFixed(1)} L` : '—', sub: 'per 100 km', color: avgEconomy > 0 ? '#111111' : '#AAAAAA' },
+          { label: 'Fuel Economy', value: avgEconomy > 0 ? `${avgEconomy.toFixed(1)} L` : '—', sub: 'per 100 km', color: avgEconomy > 0 ? '#111111' : '#888888' },
           { label: 'Total Litres', value: `${totalLitres.toFixed(0)}L`, sub: 'all time', color: '#3B82F6' },
           { label: 'Avg Price', value: avgPpl > 0 ? `R${avgPpl.toFixed(2)}` : '—', sub: 'per litre', color: '#111111' },
         ].map(s => (
           <div key={s.label} style={{ background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, padding: 16, boxShadow: 'var(--shadow-card)' }}>
             <p style={{ fontSize: 12, color: '#666666', marginBottom: 6 }}>{s.label}</p>
             <p style={{ fontSize: 22, fontWeight: 700, color: s.color }}>{s.value}</p>
-            <p style={{ fontSize: 11, color: '#999999', marginTop: 2 }}>{s.sub}</p>
+            <p style={{ fontSize: 11, color: '#666666', marginTop: 2 }}>{s.sub}</p>
           </div>
         ))}
       </div>
 
       {/* Fuel log */}
       <div style={{ padding: '0 20px' }}>
-        <p style={{ fontSize: 12, fontWeight: 600, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Fill-up History</p>
+        <p style={{ fontSize: 12, fontWeight: 600, color: '#666666', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Fill-up History</p>
         {logs.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px 0' }}>
             <Fuel size={40} color="#E5E5E0" style={{ margin: '0 auto 12px' }} />
-            <p style={{ color: '#999999', fontSize: 14 }}>No fill-ups logged yet</p>
+            <p style={{ color: '#666666', fontSize: 14 }}>No fill-ups logged yet</p>
             <button onClick={() => setShowAdd(true)} style={{ marginTop: 16, padding: '10px 20px', background: '#CBFF4D', border: 'none', borderRadius: 10, color: '#111111', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
               Log first fill-up
             </button>
@@ -155,11 +155,11 @@ export default function FuelPage() {
                         {economy ? ` · ${economy.toFixed(1)} L/100km` : ''}
                       </p>
                     </div>
-                    <p style={{ fontSize: 12, color: '#999999' }}>
+                    <p style={{ fontSize: 12, color: '#666666' }}>
                       {new Date(log.filled_at).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' })}
                     </p>
                   </div>
-                  {log.notes && <p style={{ fontSize: 12, color: '#999999', marginTop: 6, fontStyle: 'italic' }}>"{log.notes}"</p>}
+                  {log.notes && <p style={{ fontSize: 12, color: '#666666', marginTop: 6, fontStyle: 'italic' }}>"{log.notes}"</p>}
                 </div>
               )
             })}

@@ -55,7 +55,7 @@ export default function ProfilePage() {
     setSavingPrefs(false)
   }
 
-  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999999' }}>Loading...</div>
+  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666666' }}>Loading...</div>
 
   return (
     <div style={{ minHeight: '100vh', paddingBottom: 100 }}>
@@ -66,7 +66,7 @@ export default function ProfilePage() {
 
       {/* Vehicle cards */}
       <div style={{ padding: '0 20px', marginBottom: 24 }}>
-        <p style={{ fontSize: 12, fontWeight: 600, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Your Vehicles</p>
+        <p style={{ fontSize: 12, fontWeight: 600, color: '#666666', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Your Vehicles</p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {vehicles.map(v => (
             <div key={v.id} style={{ background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: 'var(--shadow-card)' }}>
@@ -88,7 +88,7 @@ export default function ProfilePage() {
           <Link href="/onboarding" style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             background: 'transparent', border: '1.5px dashed #D5D5D0', borderRadius: 20,
-            padding: '14px', textDecoration: 'none', color: '#999999', fontSize: 14,
+            padding: '14px', textDecoration: 'none', color: '#666666', fontSize: 14,
           }}>
             <Plus size={16} /> Add another vehicle
           </Link>
@@ -98,7 +98,7 @@ export default function ProfilePage() {
       {/* Service history */}
       {recentLogs.length > 0 && (
         <div style={{ padding: '0 20px', marginBottom: 24 }}>
-          <p style={{ fontSize: 12, fontWeight: 600, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Recent Service History</p>
+          <p style={{ fontSize: 12, fontWeight: 600, color: '#666666', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Recent Service History</p>
           <div style={{ background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, overflow: 'hidden', boxShadow: 'var(--shadow-card)' }}>
             {recentLogs.map((log, i) => (
               <div key={log.id} style={{ padding: '12px 16px', borderBottom: i < recentLogs.length - 1 ? '1px solid #F0F0EB' : 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -118,7 +118,7 @@ export default function ProfilePage() {
 
       {/* Notification prefs */}
       <div style={{ padding: '0 20px', marginBottom: 24 }}>
-        <p style={{ fontSize: 12, fontWeight: 600, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Notifications</p>
+        <p style={{ fontSize: 12, fontWeight: 600, color: '#666666', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Notifications</p>
         <div style={{ background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, padding: '16px', boxShadow: 'var(--shadow-card)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
             <div>

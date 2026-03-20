@@ -63,7 +63,7 @@ export default function AIChatBubble({ vehicleContext }: Props) {
                 <div style={{ fontSize: 11, color: '#22C55E' }}>● Online</div>
               </div>
             </div>
-            <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: '#AAAAAA', cursor: 'pointer' }}>
+            <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: '#888888', cursor: 'pointer' }}>
               <X size={18} />
             </button>
           </div>
@@ -118,7 +118,7 @@ export default function AIChatBubble({ vehicleContext }: Props) {
                 transition: 'background 0.15s',
               }}
             >
-              <Send size={15} color={input.trim() ? '#111111' : '#AAAAAA'} />
+              <Send size={15} color={input.trim() ? '#111111' : '#888888'} />
             </button>
           </div>
         </div>

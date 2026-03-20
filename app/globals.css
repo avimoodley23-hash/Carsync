@@ -61,7 +61,7 @@
   --secondary: #F0F0EB;
   --secondary-foreground: #111111;
   --muted: #E8E8E3;
-  --muted-foreground: #666666;
+  --muted-foreground: #555555;
   --accent: #CBFF4D;
   --accent-foreground: #111111;
   --destructive: #EF4444;
@@ -166,7 +166,7 @@
 .cs-label {
   font-size: 11px;
   font-weight: 600;
-  color: #666666;
+  color: #444444;
   margin-bottom: 6px;
   display: block;
   text-transform: uppercase;
@@ -189,7 +189,7 @@
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #D5D5D0; border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: #C5C5C0; border-radius: 2px; }
 
 /* Hide horizontal scrollbar but keep scroll */
 .scroll-x-hidden::-webkit-scrollbar { display: none; }

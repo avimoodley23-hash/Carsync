@@ -34,7 +34,7 @@ function HealthRing({ score }: { score: number }) {
             <span style={{ fontSize: 56, fontWeight: 800, color: textColor, lineHeight: 1, letterSpacing: '-2px' }}>{score}</span>
             <span style={{ fontSize: 18, fontWeight: 700, color: textColor }}>%</span>
           </div>
-          <span style={{ fontSize: 11, color: '#999999', marginTop: 2 }}>health</span>
+          <span style={{ fontSize: 11, color: '#666666', marginTop: 2 }}>health</span>
         </div>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
@@ -130,14 +130,14 @@ export default function HomePage() {
     || 'there'
   const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
 
-  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999999' }}>Loading...</div>
+  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666666' }}>Loading...</div>
 
   return (
     <div style={{ minHeight: '100vh', paddingBottom: 110 }}>
       {/* Header */}
       <div style={{ padding: '52px 20px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <p style={{ fontSize: 13, color: '#999999', fontWeight: 500 }}>Good day,</p>
+          <p style={{ fontSize: 13, color: '#666666', fontWeight: 500 }}>Good day,</p>
           <p style={{ fontSize: 26, fontWeight: 800, color: '#111111', lineHeight: 1.1, letterSpacing: '-0.5px' }}>
             Hi, {displayName}! 👋
           </p>
@@ -196,7 +196,7 @@ export default function HomePage() {
                 borderRight: i < arr.length - 1 ? '1px solid #F0F0EB' : 'none',
               }}>
                 <div style={{ fontSize: 26, fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.value}</div>
-                <div style={{ fontSize: 11, color: '#999999', marginTop: 4 }}>{s.label}</div>
+                <div style={{ fontSize: 11, color: '#666666', marginTop: 4 }}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -254,7 +254,7 @@ export default function HomePage() {
       {/* Urgent alert cards */}
       {urgent.length > 0 && (
         <div style={{ padding: '0 20px', marginBottom: 20 }}>
-          <p style={{ fontSize: 11, fontWeight: 700, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Needs Attention</p>
+          <p style={{ fontSize: 11, fontWeight: 700, color: '#666666', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Needs Attention</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {urgent.map(r => {
               const isOverdue = r.status === 'overdue'
@@ -308,7 +308,7 @@ export default function HomePage() {
 
       {/* Quick actions — horizontal scroll */}
       <div style={{ marginBottom: 20 }}>
-        <p style={{ fontSize: 11, fontWeight: 700, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, padding: '0 20px' }}>Quick Actions</p>
+        <p style={{ fontSize: 11, fontWeight: 700, color: '#666666', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, padding: '0 20px' }}>Quick Actions</p>
         <div style={{ display: 'flex', gap: 12, overflowX: 'auto', padding: '4px 20px 8px', scrollbarWidth: 'none' }}>
           {[
             { href: '/services', icon: Wrench, label: 'Log Service', sub: 'Mark as done', iconBg: '#F2FFD6', iconColor: '#6B8F0E' },
@@ -328,7 +328,7 @@ export default function HomePage() {
               </div>
               <div>
                 <p style={{ fontSize: 14, fontWeight: 700, color: '#111111' }}>{label}</p>
-                <p style={{ fontSize: 12, color: '#999999', marginTop: 2 }}>{sub}</p>
+                <p style={{ fontSize: 12, color: '#666666', marginTop: 2 }}>{sub}</p>
               </div>
             </Link>
           ))}

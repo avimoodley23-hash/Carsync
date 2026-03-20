@@ -228,7 +228,7 @@ export default function OnboardingPage() {
                     padding: '0 16px',
                     background: vin.length === 17 ? '#CBFF4D' : '#E8E8E3',
                     border: 'none', borderRadius: 12,
-                    color: vin.length === 17 ? '#111111' : '#AAAAAA',
+                    color: vin.length === 17 ? '#111111' : '#888888',
                     cursor: vin.length === 17 ? 'pointer' : 'default', flexShrink: 0,
                     display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 500,
                   }}
@@ -237,7 +237,7 @@ export default function OnboardingPage() {
                   {decoding ? '...' : 'Lookup'}
                 </button>
               </div>
-              <p style={{ fontSize: 12, color: '#999999', marginTop: 4 }}>
+              <p style={{ fontSize: 12, color: '#666666', marginTop: 4 }}>
                 Found on your dashboard, door frame, or registration papers
               </p>
             </div>
@@ -355,7 +355,7 @@ export default function OnboardingPage() {
                     }}>
                       {enabledServices.has(i) && <CheckCircle size={13} color="#111111" />}
                     </div>
-                    <span style={{ fontSize: 14, color: enabledServices.has(i) ? '#111111' : '#999999' }}>
+                    <span style={{ fontSize: 14, color: enabledServices.has(i) ? '#111111' : '#666666' }}>
                       {s.name}
                     </span>
                   </div>

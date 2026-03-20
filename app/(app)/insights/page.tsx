@@ -72,7 +72,7 @@ export default function InsightsPage() {
 
   const maxBar = Math.max(...monthly.map(m => m.service + m.fuel), 1)
 
-  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999999' }}>Loading...</div>
+  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666666' }}>Loading...</div>
 
   return (
     <div style={{ minHeight: '100vh', paddingBottom: 100 }}>
@@ -117,7 +117,7 @@ export default function InsightsPage() {
 
       {/* Monthly chart */}
       <div style={{ padding: '0 20px', marginBottom: 20 }}>
-        <p style={{ fontSize: 12, fontWeight: 600, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>Last 6 Months</p>
+        <p style={{ fontSize: 12, fontWeight: 600, color: '#666666', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>Last 6 Months</p>
         <div style={{ background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, padding: '16px', boxShadow: 'var(--shadow-card)' }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 100 }}>
             {monthly.map(m => {
@@ -132,7 +132,7 @@ export default function InsightsPage() {
                     {fuelH > 0 && <div style={{ background: '#3B82F6', height: fuelH, borderRadius: svcH > 0 ? 0 : '4px 4px 0 0', width: '100%' }} />}
                     {h === 0 && <div style={{ background: '#E8E8E3', height: 4, borderRadius: 2, width: '100%' }} />}
                   </div>
-                  <p style={{ fontSize: 10, color: '#999999' }}>{m.month}</p>
+                  <p style={{ fontSize: 10, color: '#666666' }}>{m.month}</p>
                 </div>
               )
             })}
@@ -153,7 +153,7 @@ export default function InsightsPage() {
       {/* Upcoming estimated costs */}
       {upcomingCosts.length > 0 && (
         <div style={{ padding: '0 20px' }}>
-          <p style={{ fontSize: 12, fontWeight: 600, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: '#666666', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
             Estimated Upcoming Costs
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -163,7 +163,7 @@ export default function InsightsPage() {
                 <p style={{ fontSize: 14, fontWeight: 600, color: '#D97706' }}>~R{est.toLocaleString()}</p>
               </div>
             ))}
-            <p style={{ fontSize: 11, color: '#999999', marginTop: 4 }}>* Estimates based on South African average workshop prices</p>
+            <p style={{ fontSize: 11, color: '#666666', marginTop: 4 }}>* Estimates based on South African average workshop prices</p>
           </div>
         </div>
       )}

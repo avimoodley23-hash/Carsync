@@ -27,7 +27,7 @@ export default function BottomNav() {
           alignItems: 'center', justifyContent: 'center',
           padding: '10px 0 6px',
           textDecoration: 'none',
-          color: active ? '#111111' : '#AAAAAA',
+          color: active ? '#111111' : '#777777',
           transition: 'color 0.15s',
         }}
       >
