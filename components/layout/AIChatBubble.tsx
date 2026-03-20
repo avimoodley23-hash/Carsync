@@ -48,22 +48,22 @@ export default function AIChatBubble({ vehicleContext }: Props) {
       {open && (
         <div style={{
           position: 'fixed', bottom: 90, right: 16, width: 340, maxWidth: 'calc(100vw - 32px)',
-          background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 20,
-          boxShadow: '0 20px 60px rgba(0,0,0,0.6)', zIndex: 100,
+          background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 24,
+          boxShadow: 'var(--shadow-chat)', zIndex: 100,
           display: 'flex', flexDirection: 'column', maxHeight: '70vh',
         }}>
           {/* Header */}
-          <div style={{ padding: '14px 16px', borderBottom: '1px solid #2a2a2a', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ padding: '14px 16px', borderBottom: '1px solid #F0F0EB', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#ff6b2b22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Bot size={16} color="#ff6b2b" />
+              <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#F2FFD6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Bot size={16} color="#6B8F0E" />
               </div>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 600 }}>Car Assistant</div>
-                <div style={{ fontSize: 11, color: '#22c55e' }}>● Online</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>Car Assistant</div>
+                <div style={{ fontSize: 11, color: '#22C55E' }}>● Online</div>
               </div>
             </div>
-            <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer' }}>
+            <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: '#AAAAAA', cursor: 'pointer' }}>
               <X size={18} />
             </button>
           </div>
@@ -71,13 +71,13 @@ export default function AIChatBubble({ vehicleContext }: Props) {
           {/* Messages */}
           <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
             {messages.map((m, i) => (
-              <div key={i} style={{
-                display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start',
-              }}>
+              <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
                 <div style={{
-                  maxWidth: '85%', padding: '10px 14px', borderRadius: m.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                  background: m.role === 'user' ? '#ff6b2b' : '#242424',
-                  fontSize: 13, lineHeight: 1.5, color: '#f5f5f5',
+                  maxWidth: '85%', padding: '10px 14px',
+                  borderRadius: m.role === 'user' ? '20px 20px 6px 20px' : '20px 20px 20px 6px',
+                  background: m.role === 'user' ? '#CBFF4D' : '#F0F0EB',
+                  fontSize: 13, lineHeight: 1.5,
+                  color: '#111111',
                 }}>
                   {m.content}
                 </div>
@@ -85,8 +85,10 @@ export default function AIChatBubble({ vehicleContext }: Props) {
             ))}
             {loading && (
               <div style={{ display: 'flex' }}>
-                <div style={{ padding: '10px 14px', background: '#242424', borderRadius: '16px 16px 16px 4px', fontSize: 13, color: '#888' }}>
-                  Thinking...
+                <div style={{ padding: '12px 16px', background: '#F0F0EB', borderRadius: '20px 20px 20px 6px', display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <span className="typing-dot" />
+                  <span className="typing-dot" />
+                  <span className="typing-dot" />
                 </div>
               </div>
             )}
@@ -94,28 +96,29 @@ export default function AIChatBubble({ vehicleContext }: Props) {
           </div>
 
           {/* Input */}
-          <div style={{ padding: '10px 12px', borderTop: '1px solid #2a2a2a', display: 'flex', gap: 8 }}>
+          <div style={{ padding: '10px 12px', borderTop: '1px solid #F0F0EB', display: 'flex', gap: 8 }}>
             <input
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && send()}
               placeholder="Ask about your car..."
               style={{
-                flex: 1, background: '#111', border: '1px solid #2a2a2a', borderRadius: 10,
-                padding: '10px 12px', color: '#f5f5f5', fontSize: 13, outline: 'none',
+                flex: 1, background: '#F5F5F0', border: '1.5px solid #E5E5E0', borderRadius: 12,
+                padding: '10px 12px', color: '#111111', fontSize: 13, outline: 'none',
               }}
             />
             <button
               onClick={send}
               disabled={!input.trim() || loading}
               style={{
-                width: 38, height: 38, borderRadius: 10, background: input.trim() ? '#ff6b2b' : '#2a2a2a',
+                width: 38, height: 38, borderRadius: 12,
+                background: input.trim() ? '#CBFF4D' : '#E8E8E3',
                 border: 'none', cursor: input.trim() ? 'pointer' : 'default',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                 transition: 'background 0.15s',
               }}
             >
-              <Send size={15} color="white" />
+              <Send size={15} color={input.trim() ? '#111111' : '#AAAAAA'} />
             </button>
           </div>
         </div>
@@ -126,14 +129,14 @@ export default function AIChatBubble({ vehicleContext }: Props) {
         onClick={() => setOpen(o => !o)}
         style={{
           position: 'fixed', bottom: 80, right: 16,
-          width: 52, height: 52, borderRadius: '50%',
-          background: '#ff6b2b', border: 'none', cursor: 'pointer',
+          width: 56, height: 56, borderRadius: '50%',
+          background: '#CBFF4D', border: 'none', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 4px 20px rgba(255,107,43,0.4)',
+          boxShadow: '0 4px 20px rgba(203,255,77,0.35)',
           zIndex: 99, transition: 'transform 0.15s',
         }}
       >
-        {open ? <X size={22} color="white" /> : <MessageCircle size={22} color="white" />}
+        {open ? <X size={22} color="#111111" /> : <MessageCircle size={22} color="#111111" />}
       </button>
     </>
   )

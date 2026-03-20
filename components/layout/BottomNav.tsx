@@ -17,7 +17,9 @@ export default function BottomNav() {
   return (
     <nav style={{
       position: 'fixed', bottom: 0, left: 0, right: 0,
-      background: '#111', borderTop: '1px solid #222',
+      background: '#FFFFFF',
+      boxShadow: '0 -1px 0 rgba(0,0,0,0.04), 0 -4px 20px rgba(0,0,0,0.03)',
+      borderRadius: '20px 20px 0 0',
       display: 'flex', alignItems: 'center',
       paddingBottom: 'env(safe-area-inset-bottom, 8px)',
       zIndex: 50,
@@ -32,13 +34,21 @@ export default function BottomNav() {
               flex: 1, display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center',
               padding: '10px 0 6px',
-              color: active ? '#ff6b2b' : '#555',
               textDecoration: 'none',
+              color: active ? '#111111' : '#AAAAAA',
               transition: 'color 0.15s',
             }}
           >
-            <Icon size={22} strokeWidth={active ? 2.5 : 1.8} />
-            <span style={{ fontSize: 10, marginTop: 3, fontWeight: active ? 600 : 400 }}>
+            <div style={{
+              background: active ? '#CBFF4D' : 'transparent',
+              borderRadius: 100,
+              padding: '6px 16px',
+              transition: 'background 0.25s ease',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Icon size={22} strokeWidth={active ? 2.2 : 1.6} />
+            </div>
+            <span style={{ fontSize: 11, marginTop: 2, fontWeight: active ? 600 : 400 }}>
               {label}
             </span>
           </Link>

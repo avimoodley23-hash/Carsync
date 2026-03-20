@@ -4,7 +4,6 @@ import { supabase } from '@/lib/supabase'
 import { WEEKLY_CHECKS, MONTHLY_CHECKS } from '@/lib/weekly-checks'
 import { CheckCircle, Circle, ChevronDown, ChevronUp, Flame } from 'lucide-react'
 import { toast } from 'sonner'
-import * as Icons from 'lucide-react'
 
 interface Props {
   vehicleId: string
@@ -41,7 +40,6 @@ export default function WeeklyCheckin({ vehicleId, userId }: Props) {
         if (data.checks_done.length >= WEEKLY_CHECKS.length) setThisWeekDone(true)
       }
 
-      // Calculate streak
       const { data: all } = await supabase
         .from('weekly_checkins')
         .select('week_key, checks_done')
@@ -78,7 +76,7 @@ export default function WeeklyCheckin({ vehicleId, userId }: Props) {
 
     if (checksArray.length === WEEKLY_CHECKS.length) {
       setThisWeekDone(true)
-      toast.success(`All checks done! ${streak + 1} week streak 🔥`)
+      toast.success(`All checks done! ${streak + 1} week streak`)
     }
   }
 
@@ -88,74 +86,81 @@ export default function WeeklyCheckin({ vehicleId, userId }: Props) {
   if (loading) return null
 
   return (
-    <div style={{ margin: '0 20px 20px', background: '#1a1a1a', border: `1px solid ${allDone ? '#22c55e44' : '#2a2a2a'}`, borderRadius: 20, overflow: 'hidden' }}>
+    <div style={{
+      margin: '0 20px 20px',
+      background: '#FFFFFF',
+      border: `1px solid ${allDone ? '#BBF7D0' : '#E5E5E0'}`,
+      borderRadius: 20,
+      overflow: 'hidden',
+      boxShadow: 'var(--shadow-card)',
+    }}>
       {/* Header */}
       <button
         onClick={() => setExpanded(e => !e)}
         style={{ width: '100%', padding: '16px', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 10, background: allDone ? '#22c55e22' : '#ff6b2b22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {allDone ? <CheckCircle size={18} color="#22c55e" /> : <Flame size={18} color="#ff6b2b" />}
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: allDone ? '#F0FDF4' : '#F2FFD6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {allDone ? <CheckCircle size={18} color="#16A34A" /> : <Flame size={18} color="#6B8F0E" />}
           </div>
           <div style={{ textAlign: 'left' }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#f5f5f5' }}>Weekly Check-in</p>
-            <p style={{ fontSize: 12, color: allDone ? '#22c55e' : '#888', marginTop: 1 }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: '#111111' }}>Weekly Check-in</p>
+            <p style={{ fontSize: 12, color: allDone ? '#16A34A' : '#666666', marginTop: 1 }}>
               {allDone ? `All done! · ${streak} week streak` : `${checked.size}/${WEEKLY_CHECKS.length} done · ${streak > 0 ? `${streak} week streak` : 'Start your streak'}`}
             </p>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {streak > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 3, background: '#ff6b2b22', padding: '4px 8px', borderRadius: 20 }}>
-              <Flame size={12} color="#ff6b2b" />
-              <span style={{ fontSize: 12, color: '#ff6b2b', fontWeight: 700 }}>{streak}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 3, background: '#F2FFD6', padding: '4px 8px', borderRadius: 20 }}>
+              <Flame size={12} color="#6B8F0E" />
+              <span style={{ fontSize: 12, color: '#6B8F0E', fontWeight: 700 }}>{streak}</span>
             </div>
           )}
-          {expanded ? <ChevronUp size={16} color="#555" /> : <ChevronDown size={16} color="#555" />}
+          {expanded ? <ChevronUp size={16} color="#CCCCCC" /> : <ChevronDown size={16} color="#CCCCCC" />}
         </div>
       </button>
 
       {/* Progress bar */}
-      <div style={{ height: 3, background: '#111', margin: '0 16px' }}>
-        <div style={{ height: '100%', background: allDone ? '#22c55e' : '#ff6b2b', width: `${progress}%`, borderRadius: 2, transition: 'width 0.3s' }} />
+      <div style={{ height: 3, background: '#E8E8E3', margin: '0 16px' }}>
+        <div style={{ height: '100%', background: allDone ? '#22C55E' : '#CBFF4D', width: `${progress}%`, borderRadius: 2, transition: 'width 0.3s' }} />
       </div>
 
       {expanded && (
         <div style={{ padding: '12px 16px 16px' }}>
-          <p style={{ fontSize: 11, color: '#555', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>This week's checks</p>
+          <p style={{ fontSize: 11, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 600, marginBottom: 10 }}>This week's checks</p>
 
           {WEEKLY_CHECKS.map(check => {
             const done = checked.has(check.id)
             const isOpen = expandedGuide === check.id
             return (
-              <div key={check.id} style={{ marginBottom: 6 }}>
+              <div key={check.id} style={{ marginBottom: 4 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0' }}>
                   <button onClick={() => toggle(check.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, flexShrink: 0 }}>
                     {done
-                      ? <CheckCircle size={22} color="#22c55e" fill="#22c55e22" />
-                      : <Circle size={22} color="#444" />
+                      ? <CheckCircle size={22} color="#16A34A" fill="#F0FDF4" />
+                      : <Circle size={22} color="#D5D5D0" />
                     }
                   </button>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: 14, color: done ? '#888' : '#f5f5f5', fontWeight: 500, textDecoration: done ? 'line-through' : 'none' }}>
+                      <span style={{ fontSize: 14, color: done ? '#AAAAAA' : '#111111', fontWeight: 500, textDecoration: done ? 'line-through' : 'none' }}>
                         {check.label}
                       </span>
-                      {check.critical && <span style={{ fontSize: 10, color: '#ef4444', background: '#ef444422', padding: '1px 6px', borderRadius: 10 }}>Critical</span>}
+                      {check.critical && <span style={{ fontSize: 10, color: '#DC2626', background: '#FEF2F2', border: '1px solid #FECACA', padding: '1px 6px', borderRadius: 10 }}>Critical</span>}
                     </div>
-                    <p style={{ fontSize: 12, color: '#555', marginTop: 1 }}>{check.description}</p>
+                    <p style={{ fontSize: 12, color: '#999999', marginTop: 1 }}>{check.description}</p>
                   </div>
                   <button
                     onClick={() => setExpandedGuide(isOpen ? null : check.id)}
-                    style={{ background: '#111', border: '1px solid #2a2a2a', borderRadius: 8, padding: '4px 10px', color: '#888', fontSize: 12, cursor: 'pointer' }}
+                    style={{ background: '#F0F0EB', border: '1px solid #E5E5E0', borderRadius: 8, padding: '4px 10px', color: '#666666', fontSize: 12, cursor: 'pointer' }}
                   >
                     How?
                   </button>
                 </div>
                 {isOpen && (
-                  <div style={{ background: '#111', borderRadius: 12, padding: '12px 14px', marginBottom: 4 }}>
-                    <p style={{ fontSize: 13, color: '#aaa', lineHeight: 1.6 }}>{check.howTo}</p>
+                  <div style={{ background: '#F5F5F0', borderRadius: 12, padding: '12px 14px', marginBottom: 4 }}>
+                    <p style={{ fontSize: 13, color: '#444444', lineHeight: 1.6 }}>{check.howTo}</p>
                   </div>
                 )}
               </div>
@@ -165,7 +170,7 @@ export default function WeeklyCheckin({ vehicleId, userId }: Props) {
           {/* Monthly checks toggle */}
           <button
             onClick={() => setShowMonthly(s => !s)}
-            style={{ width: '100%', marginTop: 8, padding: '10px', background: '#111', border: '1px solid #2a2a2a', borderRadius: 12, color: '#888', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+            style={{ width: '100%', marginTop: 8, padding: '10px', background: '#F0F0EB', border: '1px solid #E5E5E0', borderRadius: 12, color: '#666666', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
           >
             {showMonthly ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             Monthly checks ({MONTHLY_CHECKS.length})
@@ -180,24 +185,24 @@ export default function WeeklyCheckin({ vehicleId, userId }: Props) {
                   <div key={check.id} style={{ marginBottom: 4 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 0' }}>
                       <button onClick={() => toggle(`monthly_${check.id}`)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, flexShrink: 0 }}>
-                        {done ? <CheckCircle size={22} color="#3b82f6" fill="#3b82f622" /> : <Circle size={22} color="#444" />}
+                        {done ? <CheckCircle size={22} color="#3B82F6" fill="#EFF6FF" /> : <Circle size={22} color="#D5D5D0" />}
                       </button>
                       <div style={{ flex: 1 }}>
-                        <span style={{ fontSize: 14, color: done ? '#888' : '#f5f5f5', fontWeight: 500, textDecoration: done ? 'line-through' : 'none' }}>
+                        <span style={{ fontSize: 14, color: done ? '#AAAAAA' : '#111111', fontWeight: 500, textDecoration: done ? 'line-through' : 'none' }}>
                           {check.label}
                         </span>
-                        <p style={{ fontSize: 12, color: '#555', marginTop: 1 }}>{check.description}</p>
+                        <p style={{ fontSize: 12, color: '#999999', marginTop: 1 }}>{check.description}</p>
                       </div>
                       <button
                         onClick={() => setExpandedGuide(isOpen ? null : `monthly_${check.id}`)}
-                        style={{ background: '#111', border: '1px solid #2a2a2a', borderRadius: 8, padding: '4px 10px', color: '#888', fontSize: 12, cursor: 'pointer' }}
+                        style={{ background: '#F0F0EB', border: '1px solid #E5E5E0', borderRadius: 8, padding: '4px 10px', color: '#666666', fontSize: 12, cursor: 'pointer' }}
                       >
                         How?
                       </button>
                     </div>
                     {isOpen && (
-                      <div style={{ background: '#111', borderRadius: 12, padding: '12px 14px', marginBottom: 4 }}>
-                        <p style={{ fontSize: 13, color: '#aaa', lineHeight: 1.6 }}>{check.howTo}</p>
+                      <div style={{ background: '#F5F5F0', borderRadius: 12, padding: '12px 14px', marginBottom: 4 }}>
+                        <p style={{ fontSize: 13, color: '#444444', lineHeight: 1.6 }}>{check.howTo}</p>
                       </div>
                     )}
                   </div>

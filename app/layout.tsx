@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const dmSans = DM_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -19,12 +20,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col" style={{ background: '#0f0f0f', color: '#f5f5f5' }}>
+    <html lang="en" className={`${dmSans.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col" style={{ background: '#F5F5F0', color: '#111111' }}>
         {children}
         <Toaster
           toastOptions={{
-            style: { background: '#1e1e1e', color: '#f5f5f5', border: '1px solid #2a2a2a' },
+            style: {
+              background: '#FFFFFF',
+              color: '#111111',
+              border: '1px solid #E5E5E0',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+              borderRadius: '16px',
+            },
           }}
           position="top-center"
         />

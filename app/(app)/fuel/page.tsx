@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase, Vehicle } from '@/lib/supabase'
-import { Fuel, Plus, X, TrendingDown, TrendingUp, Droplets } from 'lucide-react'
+import { Fuel, Plus, X, Droplets } from 'lucide-react'
 import { toast } from 'sonner'
 
 type FuelLog = {
@@ -67,7 +67,6 @@ export default function FuelPage() {
     })
     if (error) { toast.error(error.message); setSaving(false); return }
 
-    // Update vehicle odometer
     if (parseInt(odometer) > vehicle!.current_odometer) {
       await supabase.from('vehicles').update({ current_odometer: parseInt(odometer) }).eq('id', vehicle!.id)
     }
@@ -79,12 +78,10 @@ export default function FuelPage() {
     setSaving(false)
   }
 
-  // Stats
   const totalSpent = logs.reduce((s, l) => s + l.total_cost, 0)
   const totalLitres = logs.reduce((s, l) => s + l.litres, 0)
   const avgPpl = logs.length > 0 ? logs.reduce((s, l) => s + l.price_per_litre, 0) / logs.length : 0
 
-  // Fuel economy (L/100km) from consecutive full tank fill-ups
   const fullLogs = logs.filter(l => l.full_tank).slice(0, 10)
   let avgEconomy = 0
   if (fullLogs.length >= 2) {
@@ -96,59 +93,47 @@ export default function FuelPage() {
     if (pairs.length > 0) avgEconomy = pairs.reduce((s, v) => s + v, 0) / pairs.length
   }
 
-  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555' }}>Loading...</div>
+  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999999' }}>Loading...</div>
 
   return (
     <div style={{ minHeight: '100vh', paddingBottom: 100 }}>
       <div style={{ padding: '52px 20px 16px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
         <div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: '#f5f5f5' }}>Fuel</h1>
-          <p style={{ fontSize: 13, color: '#888', marginTop: 2 }}>{vehicle?.make} {vehicle?.model}</p>
+          <h1 style={{ fontSize: 28, fontWeight: 700, color: '#111111' }}>Fuel</h1>
+          <p style={{ fontSize: 13, color: '#666666', marginTop: 2 }}>{vehicle?.make} {vehicle?.model}</p>
         </div>
         <button
           onClick={() => setShowAdd(true)}
-          style={{ width: 40, height: 40, borderRadius: 12, background: '#ff6b2b', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+          style={{ width: 40, height: 40, borderRadius: 12, background: '#CBFF4D', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: 'var(--shadow-fab)' }}
         >
-          <Plus size={20} color="white" />
+          <Plus size={20} color="#111111" />
         </button>
       </div>
 
       {/* Stats */}
       <div style={{ padding: '0 20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
-        <div style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 16, padding: 16 }}>
-          <p style={{ fontSize: 12, color: '#888', marginBottom: 6 }}>Total Spent</p>
-          <p style={{ fontSize: 22, fontWeight: 800, color: '#f5f5f5' }}>R{totalSpent.toFixed(0)}</p>
-          <p style={{ fontSize: 11, color: '#555', marginTop: 2 }}>{logs.length} fill-ups</p>
-        </div>
-        <div style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 16, padding: 16 }}>
-          <p style={{ fontSize: 12, color: '#888', marginBottom: 6 }}>Fuel Economy</p>
-          <p style={{ fontSize: 22, fontWeight: 800, color: avgEconomy > 0 ? '#f5f5f5' : '#555' }}>
-            {avgEconomy > 0 ? `${avgEconomy.toFixed(1)} L` : '—'}
-          </p>
-          <p style={{ fontSize: 11, color: '#555', marginTop: 2 }}>per 100 km</p>
-        </div>
-        <div style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 16, padding: 16 }}>
-          <p style={{ fontSize: 12, color: '#888', marginBottom: 6 }}>Total Litres</p>
-          <p style={{ fontSize: 22, fontWeight: 800, color: '#3b82f6' }}>{totalLitres.toFixed(0)}L</p>
-          <p style={{ fontSize: 11, color: '#555', marginTop: 2 }}>all time</p>
-        </div>
-        <div style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 16, padding: 16 }}>
-          <p style={{ fontSize: 12, color: '#888', marginBottom: 6 }}>Avg Price</p>
-          <p style={{ fontSize: 22, fontWeight: 800, color: '#f5f5f5' }}>
-            {avgPpl > 0 ? `R${avgPpl.toFixed(2)}` : '—'}
-          </p>
-          <p style={{ fontSize: 11, color: '#555', marginTop: 2 }}>per litre</p>
-        </div>
+        {[
+          { label: 'Total Spent', value: `R${totalSpent.toFixed(0)}`, sub: `${logs.length} fill-ups`, color: '#111111' },
+          { label: 'Fuel Economy', value: avgEconomy > 0 ? `${avgEconomy.toFixed(1)} L` : '—', sub: 'per 100 km', color: avgEconomy > 0 ? '#111111' : '#AAAAAA' },
+          { label: 'Total Litres', value: `${totalLitres.toFixed(0)}L`, sub: 'all time', color: '#3B82F6' },
+          { label: 'Avg Price', value: avgPpl > 0 ? `R${avgPpl.toFixed(2)}` : '—', sub: 'per litre', color: '#111111' },
+        ].map(s => (
+          <div key={s.label} style={{ background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, padding: 16, boxShadow: 'var(--shadow-card)' }}>
+            <p style={{ fontSize: 12, color: '#666666', marginBottom: 6 }}>{s.label}</p>
+            <p style={{ fontSize: 22, fontWeight: 700, color: s.color }}>{s.value}</p>
+            <p style={{ fontSize: 11, color: '#999999', marginTop: 2 }}>{s.sub}</p>
+          </div>
+        ))}
       </div>
 
       {/* Fuel log */}
       <div style={{ padding: '0 20px' }}>
-        <p style={{ fontSize: 13, fontWeight: 600, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>Fill-up History</p>
+        <p style={{ fontSize: 12, fontWeight: 600, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Fill-up History</p>
         {logs.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px 0' }}>
-            <Fuel size={40} color="#2a2a2a" style={{ margin: '0 auto 12px' }} />
-            <p style={{ color: '#555', fontSize: 14 }}>No fill-ups logged yet</p>
-            <button onClick={() => setShowAdd(true)} style={{ marginTop: 16, padding: '10px 20px', background: '#ff6b2b', border: 'none', borderRadius: 10, color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+            <Fuel size={40} color="#E5E5E0" style={{ margin: '0 auto 12px' }} />
+            <p style={{ color: '#999999', fontSize: 14 }}>No fill-ups logged yet</p>
+            <button onClick={() => setShowAdd(true)} style={{ marginTop: 16, padding: '10px 20px', background: '#CBFF4D', border: 'none', borderRadius: 10, color: '#111111', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
               Log first fill-up
             </button>
           </div>
@@ -159,22 +144,22 @@ export default function FuelPage() {
               const km = prev ? log.odometer - prev.odometer : null
               const economy = km && km > 0 && log.full_tank ? (log.litres / km) * 100 : null
               return (
-                <div key={log.id} style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 14, padding: '14px 16px' }}>
+                <div key={log.id} style={{ background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, padding: '14px 16px', boxShadow: 'var(--shadow-card)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
-                      <p style={{ fontSize: 14, fontWeight: 600, color: '#f5f5f5' }}>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>
                         R{log.total_cost.toFixed(2)} · {log.litres}L
                       </p>
-                      <p style={{ fontSize: 12, color: '#888', marginTop: 2 }}>
+                      <p style={{ fontSize: 12, color: '#666666', marginTop: 2 }}>
                         R{log.price_per_litre.toFixed(2)}/L · {log.odometer.toLocaleString()} km
                         {economy ? ` · ${economy.toFixed(1)} L/100km` : ''}
                       </p>
                     </div>
-                    <p style={{ fontSize: 12, color: '#555' }}>
+                    <p style={{ fontSize: 12, color: '#999999' }}>
                       {new Date(log.filled_at).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' })}
                     </p>
                   </div>
-                  {log.notes && <p style={{ fontSize: 12, color: '#555', marginTop: 6, fontStyle: 'italic' }}>"{log.notes}"</p>}
+                  {log.notes && <p style={{ fontSize: 12, color: '#999999', marginTop: 6, fontStyle: 'italic' }}>"{log.notes}"</p>}
                 </div>
               )
             })}
@@ -184,12 +169,14 @@ export default function FuelPage() {
 
       {/* Add Modal */}
       {showAdd && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 200, display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ background: '#1a1a1a', borderRadius: '24px 24px 0 0', width: '100%', padding: '24px 20px 40px', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', zIndex: 200, display: 'flex', alignItems: 'flex-end' }}>
+          <div className="cs-sheet" style={{ background: '#FFFFFF', borderRadius: '28px 28px 0 0', width: '100%', padding: '24px 20px 40px', maxHeight: '90vh', overflowY: 'auto', boxShadow: 'var(--shadow-elevated)' }}>
+            {/* Drag handle */}
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: '#D5D5D0', margin: '0 auto 20px' }} />
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: '#f5f5f5' }}>Log Fill-up</h3>
-              <button onClick={() => setShowAdd(false)} style={{ background: '#2a2a2a', border: 'none', borderRadius: 10, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                <X size={18} color="#888" />
+              <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111111' }}>Log Fill-up</h3>
+              <button onClick={() => setShowAdd(false)} style={{ background: '#F0F0EB', border: '1px solid #E5E5E0', borderRadius: 10, width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                <X size={18} color="#999999" />
               </button>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -204,8 +191,8 @@ export default function FuelPage() {
                 </div>
               </div>
               {litres && ppl && (
-                <div style={{ background: '#ff6b2b11', border: '1px solid #ff6b2b33', borderRadius: 10, padding: '10px 14px' }}>
-                  <p style={{ fontSize: 15, fontWeight: 700, color: '#ff6b2b' }}>
+                <div style={{ background: '#F2FFD6', border: '1px solid #E8F5A1', borderRadius: 12, padding: '10px 14px' }}>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: '#6B8F0E' }}>
                     Total: R{(parseFloat(litres) * parseFloat(ppl)).toFixed(2)}
                   </p>
                 </div>
@@ -222,10 +209,16 @@ export default function FuelPage() {
               </div>
               <button
                 onClick={() => setFullTank(f => !f)}
-                style={{ padding: '12px 16px', background: fullTank ? '#3b82f622' : 'transparent', border: `1px solid ${fullTank ? '#3b82f6' : '#2a2a2a'}`, borderRadius: 12, color: fullTank ? '#3b82f6' : '#888', cursor: 'pointer', fontSize: 14, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 }}
+                style={{
+                  padding: '12px 16px',
+                  background: fullTank ? '#EFF6FF' : '#F0F0EB',
+                  border: `1px solid ${fullTank ? '#BFDBFE' : '#E5E5E0'}`,
+                  borderRadius: 12, color: fullTank ? '#3B82F6' : '#666666',
+                  cursor: 'pointer', fontSize: 14, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8,
+                }}
               >
                 <Droplets size={16} />
-                {fullTank ? 'Full tank ✓' : 'Partial fill-up'}
+                {fullTank ? 'Full tank' : 'Partial fill-up'}
               </button>
               <div>
                 <label className="cs-label">Notes (optional)</label>

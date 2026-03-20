@@ -26,35 +26,38 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Car className="text-blue-600" size={28} />
-            <span className="font-bold text-2xl text-gray-900">CarSync</span>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F5F5F0', padding: '0 20px' }}>
+      <div style={{ width: '100%', maxWidth: 380 }}>
+        {/* Logo */}
+        <div style={{ textAlign: 'center', marginBottom: 32 }}>
+          <div style={{ width: 56, height: 56, borderRadius: 16, background: '#CBFF4D', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', boxShadow: '0 4px 20px rgba(203,255,77,0.35)' }}>
+            <Car size={28} color="#111111" />
           </div>
-          <p className="text-gray-500">Create your free account</p>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: '#111111' }}>CarSync</h1>
+          <p style={{ fontSize: 14, color: '#666666', marginTop: 4 }}>Create your free account</p>
         </div>
-        <div className="bg-white rounded-2xl shadow-sm border p-8">
-          <form onSubmit={handleSignup} className="space-y-4">
+
+        {/* Card */}
+        <div style={{ background: '#FFFFFF', borderRadius: 24, border: '1px solid #E5E5E0', padding: '28px 24px', boxShadow: 'var(--shadow-card)' }}>
+          <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className="cs-label">Email</label>
               <input
+                className="cs-input"
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="you@example.com"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className="cs-label">Password</label>
               <input
+                className="cs-input"
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Min 6 characters"
                 minLength={6}
                 required
@@ -63,14 +66,15 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
+              className="cs-btn-primary"
+              style={{ marginTop: 4 }}
             >
               {loading ? 'Creating account...' : 'Create Account'}
             </button>
           </form>
-          <p className="text-center text-sm text-gray-500 mt-4">
+          <p style={{ textAlign: 'center', fontSize: 14, color: '#666666', marginTop: 20 }}>
             Already have an account?{' '}
-            <Link href="/login" className="text-blue-600 hover:underline font-medium">
+            <Link href="/login" style={{ color: '#111111', fontWeight: 600, textDecoration: 'none' }}>
               Sign in
             </Link>
           </p>

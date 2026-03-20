@@ -49,46 +49,42 @@
 }
 
 :root {
-  /* CarSync dark theme - always dark */
-  --background: #0f0f0f;
-  --foreground: #f5f5f5;
-  --card: #1a1a1a;
-  --card-foreground: #f5f5f5;
-  --popover: #1e1e1e;
-  --popover-foreground: #f5f5f5;
-  --primary: #ff6b2b;
-  --primary-foreground: #ffffff;
-  --secondary: #1e1e1e;
-  --secondary-foreground: #f5f5f5;
-  --muted: #2a2a2a;
-  --muted-foreground: #888888;
-  --accent: #ff6b2b;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
-  --border: #2a2a2a;
-  --input: #1e1e1e;
-  --ring: #ff6b2b;
-  --radius: 0.75rem;
-  /* chart colors */
-  --chart-1: #ff6b2b;
-  --chart-2: #3b82f6;
-  --chart-3: #22c55e;
-  --chart-4: #f59e0b;
-  --chart-5: #a855f7;
-  /* CarSync brand */
-  --orange: #ff6b2b;
-  --orange-dim: #ff6b2b33;
-  --blue: #3b82f6;
-  --blue-dim: #3b82f633;
-  --green: #22c55e;
-  --green-dim: #22c55e33;
-  --red: #ef4444;
-  --red-dim: #ef444433;
-  --yellow: #f59e0b;
-  --yellow-dim: #f59e0b33;
-}
+  /* === CarSync Light Theme === */
+  --background: #F5F5F0;
+  --foreground: #111111;
+  --card: #FFFFFF;
+  --card-foreground: #111111;
+  --popover: #FFFFFF;
+  --popover-foreground: #111111;
+  --primary: #CBFF4D;
+  --primary-foreground: #111111;
+  --secondary: #F0F0EB;
+  --secondary-foreground: #111111;
+  --muted: #E8E8E3;
+  --muted-foreground: #666666;
+  --accent: #CBFF4D;
+  --accent-foreground: #111111;
+  --destructive: #EF4444;
+  --border: #E5E5E0;
+  --input: #FFFFFF;
+  --ring: #CBFF4D;
+  --radius: 1.25rem;
 
-/* No separate dark class — app is always dark */
+  /* Chart colors */
+  --chart-1: #CBFF4D;
+  --chart-2: #3B82F6;
+  --chart-3: #22C55E;
+  --chart-4: #F59E0B;
+  --chart-5: #8B5CF6;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+  --shadow-card-hover: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.05);
+  --shadow-elevated: 0 4px 16px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.06);
+  --shadow-nav: 0 -1px 0 rgba(0,0,0,0.04), 0 -4px 20px rgba(0,0,0,0.03);
+  --shadow-chat: 0 8px 40px rgba(0,0,0,0.12), 0 20px 60px rgba(0,0,0,0.06);
+  --shadow-fab: 0 4px 20px rgba(203,255,77,0.35);
+}
 
 @layer base {
   * {
@@ -96,44 +92,48 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-color: #0f0f0f;
-    color: #f5f5f5;
+    background-color: #F5F5F0;
+    color: #111111;
+    -webkit-font-smoothing: antialiased;
   }
   html {
     @apply font-sans;
   }
 }
 
-/* CarSync utility classes */
+/* === CarSync Utility Classes === */
+
 .cs-card {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-radius: 16px;
+  background: #FFFFFF;
+  border: 1px solid #E5E5E0;
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
 }
 
 .cs-input {
-  background: #1e1e1e;
-  border: 1px solid #2a2a2a;
-  color: #f5f5f5;
-  border-radius: 10px;
+  background: #FFFFFF;
+  border: 1.5px solid #E5E5E0;
+  color: #111111;
+  border-radius: 12px;
   padding: 12px 14px;
   font-size: 15px;
   width: 100%;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .cs-input:focus {
-  border-color: #ff6b2b;
+  border-color: #CBFF4D;
+  box-shadow: 0 0 0 3px rgba(203, 255, 77, 0.15);
 }
 
 .cs-input::placeholder {
-  color: #555;
+  color: #AAAAAA;
 }
 
 .cs-btn-primary {
-  background: #ff6b2b;
-  color: white;
+  background: #CBFF4D;
+  color: #111111;
   border-radius: 12px;
   padding: 14px 24px;
   font-weight: 600;
@@ -141,53 +141,89 @@
   width: 100%;
   border: none;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: opacity 0.15s, transform 0.1s;
 }
 
-.cs-btn-primary:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
+.cs-btn-primary:hover { opacity: 0.9; }
+.cs-btn-primary:active { transform: scale(0.98); }
+.cs-btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
 .cs-btn-ghost {
-  background: #1e1e1e;
-  color: #f5f5f5;
+  background: #FFFFFF;
+  color: #111111;
   border-radius: 12px;
   padding: 14px 24px;
   font-weight: 600;
   font-size: 15px;
   width: 100%;
-  border: 1px solid #2a2a2a;
+  border: 1.5px solid #E5E5E0;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.15s;
 }
 
+.cs-btn-ghost:hover { background: #F0F0EB; }
+
 .cs-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: #888;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666666;
   margin-bottom: 6px;
   display: block;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 
-/* Status colors */
-.status-overdue { color: #ef4444; }
-.status-due { color: #f59e0b; }
-.status-upcoming { color: #22c55e; }
-.status-ok { color: #22c55e; }
+/* Status */
+.status-overdue { color: #DC2626; }
+.status-due { color: #D97706; }
+.status-upcoming { color: #16A34A; }
+.status-ok { color: #16A34A; }
 
-.badge-overdue { background: #ef444422; color: #ef4444; border: 1px solid #ef444433; }
-.badge-due { background: #f59e0b22; color: #f59e0b; border: 1px solid #f59e0b33; }
-.badge-upcoming { background: #22c55e22; color: #22c55e; border: 1px solid #22c55e33; }
+.badge-overdue { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+.badge-due { background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
+.badge-upcoming { background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; }
 
-/* Safe area for mobile */
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 16px);
-}
+/* Safe area */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 16px); }
 
-/* Scrollbar styling */
+/* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: #D5D5D0; border-radius: 2px; }
+
+/* Sheet slide-up animation */
+@keyframes sheetSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.cs-sheet { animation: sheetSlideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards; }
+
+/* Card entrance */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.cs-animate-in {
+  animation: fadeSlideUp 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+/* Typing dots */
+@keyframes typingDot {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+.typing-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #999999; display: inline-block; margin: 0 2px;
+  animation: typingDot 1.4s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

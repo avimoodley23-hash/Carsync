@@ -15,24 +15,25 @@ function HealthRing({ score }: { score: number }) {
   const r = 70
   const circ = 2 * Math.PI * r
   const offset = circ - (score / 100) * circ
-  const color = score >= 75 ? '#22c55e' : score >= 40 ? '#f59e0b' : '#ef4444'
+  const color = score >= 75 ? '#16A34A' : score >= 40 ? '#D97706' : '#DC2626'
+  const strokeColor = score >= 75 ? '#22C55E' : score >= 40 ? '#F59E0B' : '#EF4444'
   const label = score >= 75 ? 'Great shape' : score >= 40 ? 'Needs attention' : 'Action required'
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px 0 16px' }}>
       <div style={{ position: 'relative', width: 180, height: 180 }}>
         <svg width="180" height="180" style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx="90" cy="90" r={r} fill="none" stroke="#1e1e1e" strokeWidth="14" />
-          <circle cx="90" cy="90" r={r} fill="none" stroke={color} strokeWidth="14"
+          <circle cx="90" cy="90" r={r} fill="none" stroke="#E8E8E3" strokeWidth="14" />
+          <circle cx="90" cy="90" r={r} fill="none" stroke={strokeColor} strokeWidth="14"
             strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
-            style={{ transition: 'stroke-dashoffset 1s ease, stroke 0.5s ease', filter: `drop-shadow(0 0 8px ${color}66)` }}
+            style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1), stroke 0.5s ease', filter: `drop-shadow(0 0 10px ${strokeColor}44)` }}
           />
         </svg>
         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: 40, fontWeight: 800, color, lineHeight: 1 }}>{score}</span>
-          <span style={{ fontSize: 12, color: '#888', marginTop: 2 }}>/ 100</span>
+          <span style={{ fontSize: 44, fontWeight: 700, color, lineHeight: 1 }}>{score}</span>
+          <span style={{ fontSize: 12, color: '#999999', marginTop: 2 }}>/ 100</span>
         </div>
       </div>
-      <span style={{ fontSize: 15, fontWeight: 600, color, marginTop: 4 }}>{label}</span>
+      <span style={{ fontSize: 14, fontWeight: 600, color, marginTop: 4, letterSpacing: '0.02em' }}>{label}</span>
     </div>
   )
 }
@@ -62,13 +63,11 @@ export default function HomePage() {
       setNewOdometer(String(vs[0].current_odometer))
       await loadReminders(vs[0])
 
-      // Check if push prompt needed
       if ('Notification' in window && Notification.permission === 'default') {
         const seen = localStorage.getItem('push-prompt-seen')
         if (!seen) setShowPushPrompt(true)
       }
 
-      // Odometer nudge: show if last update was >7 days ago (check via last fuel/service log)
       const { data: lastLog } = await supabase
         .from('service_logs').select('created_at').eq('vehicle_id', vs[0].id)
         .order('created_at', { ascending: false }).limit(1)
@@ -118,20 +117,20 @@ export default function HomePage() {
   const urgent = reminders.filter(r => r.status === 'overdue' || r.status === 'due')
     .sort((a, b) => (a.status === 'overdue' ? -1 : 1)).slice(0, 4)
 
-  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555' }}>Loading...</div>
+  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999999' }}>Loading...</div>
 
   return (
     <div style={{ minHeight: '100vh', paddingBottom: 100 }}>
       {/* Header */}
       <div style={{ padding: '52px 20px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <p style={{ fontSize: 13, color: '#888' }}>Your vehicle</p>
-          <p style={{ fontSize: 18, fontWeight: 700, color: '#f5f5f5', marginTop: 2 }}>
+          <p style={{ fontSize: 13, color: '#666666' }}>Your vehicle</p>
+          <p style={{ fontSize: 20, fontWeight: 700, color: '#111111', marginTop: 2 }}>
             {vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : 'No vehicle'}
           </p>
         </div>
-        <Link href="/onboarding" style={{ width: 38, height: 38, borderRadius: 12, background: '#1a1a1a', border: '1px solid #2a2a2a', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>
-          <Plus size={18} color="#888" />
+        <Link href="/onboarding" style={{ width: 38, height: 38, borderRadius: 12, background: '#FFFFFF', border: '1px solid #E5E5E0', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>
+          <Plus size={18} color="#666666" />
         </Link>
       </div>
 
@@ -139,7 +138,12 @@ export default function HomePage() {
       {vehicles.length > 1 && (
         <div style={{ padding: '12px 20px 0', display: 'flex', gap: 8, overflowX: 'auto' }}>
           {vehicles.map(v => (
-            <button key={v.id} onClick={() => { setVehicle(v); loadReminders(v) }} style={{ padding: '6px 14px', borderRadius: 20, fontSize: 13, fontWeight: 500, background: vehicle?.id === v.id ? '#ff6b2b' : '#1a1a1a', color: vehicle?.id === v.id ? 'white' : '#888', border: `1px solid ${vehicle?.id === v.id ? '#ff6b2b' : '#2a2a2a'}`, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}>
+            <button key={v.id} onClick={() => { setVehicle(v); loadReminders(v) }} style={{
+              padding: '6px 16px', borderRadius: 100, fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
+              background: vehicle?.id === v.id ? '#CBFF4D' : '#FFFFFF',
+              color: vehicle?.id === v.id ? '#111111' : '#666666',
+              border: `1px solid ${vehicle?.id === v.id ? '#CBFF4D' : '#E5E5E0'}`,
+            }}>
               {v.make} {v.model}
             </button>
           ))}
@@ -154,30 +158,30 @@ export default function HomePage() {
       {/* Stats */}
       <div style={{ padding: '0 20px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 20 }}>
         {[
-          { label: 'Overdue', value: reminders.filter(r => r.status === 'overdue').length, color: '#ef4444' },
-          { label: 'Due soon', value: reminders.filter(r => r.status === 'due').length, color: '#f59e0b' },
-          { label: 'All good', value: reminders.filter(r => r.status === 'upcoming').length, color: '#22c55e' },
+          { label: 'Overdue', value: reminders.filter(r => r.status === 'overdue').length, color: '#DC2626', border: '#FECACA' },
+          { label: 'Due soon', value: reminders.filter(r => r.status === 'due').length, color: '#D97706', border: '#FDE68A' },
+          { label: 'All good', value: reminders.filter(r => r.status === 'upcoming').length, color: '#16A34A', border: '#BBF7D0' },
         ].map(stat => (
-          <div key={stat.label} style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 14, padding: '12px 10px', textAlign: 'center' }}>
-            <div style={{ fontSize: 26, fontWeight: 800, color: stat.color }}>{stat.value}</div>
-            <div style={{ fontSize: 11, color: '#888', marginTop: 2 }}>{stat.label}</div>
+          <div key={stat.label} style={{ background: '#FFFFFF', border: `1px solid ${stat.border}`, borderRadius: 16, padding: '12px 10px', textAlign: 'center', boxShadow: 'var(--shadow-card)' }}>
+            <div style={{ fontSize: 28, fontWeight: 700, color: stat.color }}>{stat.value}</div>
+            <div style={{ fontSize: 11, color: '#666666', marginTop: 2 }}>{stat.label}</div>
           </div>
         ))}
       </div>
 
       {/* Push notification prompt */}
       {showPushPrompt && (
-        <div style={{ margin: '0 20px 16px', background: '#3b82f611', border: '1px solid #3b82f633', borderRadius: 16, padding: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+        <div style={{ margin: '0 20px 16px', background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: 16, padding: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                <Bell size={16} color="#3b82f6" />
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#f5f5f5' }}>Enable notifications</p>
+                <Bell size={16} color="#3B82F6" />
+                <p style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>Enable notifications</p>
               </div>
-              <p style={{ fontSize: 12, color: '#888' }}>Get reminders when services are due — no spam, only what matters.</p>
+              <p style={{ fontSize: 13, color: '#666666' }}>Get reminders when services are due — no spam, only what matters.</p>
               <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-                <button onClick={handleEnablePush} style={{ padding: '8px 16px', background: '#3b82f6', border: 'none', borderRadius: 10, color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Enable</button>
-                <button onClick={() => { localStorage.setItem('push-prompt-seen', '1'); setShowPushPrompt(false) }} style={{ padding: '8px 16px', background: 'transparent', border: '1px solid #2a2a2a', borderRadius: 10, color: '#888', fontSize: 13, cursor: 'pointer' }}>Later</button>
+                <button onClick={handleEnablePush} style={{ padding: '8px 16px', background: '#3B82F6', border: 'none', borderRadius: 10, color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>Enable</button>
+                <button onClick={() => { localStorage.setItem('push-prompt-seen', '1'); setShowPushPrompt(false) }} style={{ padding: '8px 16px', background: 'transparent', border: '1px solid #E5E5E0', borderRadius: 10, color: '#666666', fontSize: 13, cursor: 'pointer' }}>Later</button>
               </div>
             </div>
           </div>
@@ -186,13 +190,13 @@ export default function HomePage() {
 
       {/* Odometer nudge */}
       {showOdometerNudge && (
-        <div style={{ margin: '0 20px 16px', background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 16, padding: '16px' }}>
+        <div style={{ margin: '0 20px 16px', background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 16, padding: '16px', boxShadow: 'var(--shadow-card)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <Gauge size={16} color="#f59e0b" />
-            <p style={{ fontSize: 14, fontWeight: 600, color: '#f5f5f5' }}>Update your odometer</p>
+            <Gauge size={16} color="#D97706" />
+            <p style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>Update your odometer</p>
           </div>
-          <p style={{ fontSize: 12, color: '#888', marginBottom: 12 }}>
-            Current: <strong style={{ color: '#f5f5f5' }}>{vehicle?.current_odometer.toLocaleString()} km</strong> — keep it accurate for better reminders
+          <p style={{ fontSize: 13, color: '#666666', marginBottom: 12 }}>
+            Current: <strong style={{ color: '#111111' }}>{vehicle?.current_odometer.toLocaleString()} km</strong> — keep it accurate for better reminders
           </p>
           <div style={{ display: 'flex', gap: 8 }}>
             <input
@@ -203,10 +207,10 @@ export default function HomePage() {
               style={{ flex: 1 }}
               placeholder="New km reading"
             />
-            <button onClick={handleOdometerUpdate} disabled={savingOdo} style={{ padding: '0 16px', background: '#ff6b2b', border: 'none', borderRadius: 10, color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>
+            <button onClick={handleOdometerUpdate} disabled={savingOdo} style={{ padding: '0 16px', background: '#CBFF4D', border: 'none', borderRadius: 10, color: '#111111', fontSize: 14, fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>
               {savingOdo ? '...' : 'Update'}
             </button>
-            <button onClick={() => setShowOdometerNudge(false)} style={{ padding: '0 12px', background: 'transparent', border: '1px solid #2a2a2a', borderRadius: 10, color: '#555', fontSize: 13, cursor: 'pointer' }}>
+            <button onClick={() => setShowOdometerNudge(false)} style={{ padding: '0 12px', background: 'transparent', border: '1px solid #E5E5E0', borderRadius: 10, color: '#666666', fontSize: 13, cursor: 'pointer' }}>
               Skip
             </button>
           </div>
@@ -219,24 +223,32 @@ export default function HomePage() {
       {/* Urgent items */}
       {urgent.length > 0 && (
         <div style={{ padding: '0 20px', marginBottom: 20 }}>
-          <p style={{ fontSize: 13, fontWeight: 600, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>Needs Attention</p>
+          <p style={{ fontSize: 12, fontWeight: 600, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Needs Attention</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {urgent.map(r => {
               const isOverdue = r.status === 'overdue'
-              const color = isOverdue ? '#ef4444' : '#f59e0b'
+              const color = isOverdue ? '#EF4444' : '#F59E0B'
+              const textColor = isOverdue ? '#DC2626' : '#D97706'
+              const bgColor = isOverdue ? '#FEF2F2' : '#FFFBEB'
+              const borderColor = isOverdue ? '#FECACA' : '#FDE68A'
               const Icon = isOverdue ? AlertTriangle : Clock
               return (
-                <Link key={r.id} href="/services" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderRadius: 14, textDecoration: 'none', background: '#1a1a1a', border: `1px solid ${color}33` }}>
+                <Link key={r.id} href="/services" style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '14px 16px', borderRadius: 20, textDecoration: 'none',
+                  background: '#FFFFFF', border: `1px solid ${borderColor}`,
+                  boxShadow: 'var(--shadow-card)',
+                }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 36, height: 36, borderRadius: 10, background: `${color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Icon size={18} color={color} />
+                    <div style={{ width: 40, height: 40, borderRadius: 12, background: bgColor, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <Icon size={20} color={color} />
                     </div>
                     <div>
-                      <p style={{ fontSize: 14, fontWeight: 600, color: '#f5f5f5' }}>{r.service_types?.name}</p>
-                      <p style={{ fontSize: 12, color, marginTop: 1 }}>{isOverdue ? 'Overdue' : 'Due soon'}{r.service_types?.is_critical ? ' · Critical' : ''}</p>
+                      <p style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>{r.service_types?.name}</p>
+                      <p style={{ fontSize: 12, color: textColor, marginTop: 1 }}>{isOverdue ? 'Overdue' : 'Due soon'}{r.service_types?.is_critical ? ' · Critical' : ''}</p>
                     </div>
                   </div>
-                  <ChevronRight size={16} color="#555" />
+                  <ChevronRight size={16} color="#CCCCCC" />
                 </Link>
               )
             })}
@@ -246,11 +258,11 @@ export default function HomePage() {
 
       {urgent.length === 0 && (
         <div style={{ padding: '0 20px', marginBottom: 20 }}>
-          <div style={{ background: '#22c55e11', border: '1px solid #22c55e33', borderRadius: 14, padding: '20px', display: 'flex', alignItems: 'center', gap: 12 }}>
-            <CheckCircle size={24} color="#22c55e" />
+          <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 20, padding: '20px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: 'var(--shadow-card)' }}>
+            <CheckCircle size={24} color="#22C55E" />
             <div>
-              <p style={{ fontSize: 15, fontWeight: 600, color: '#22c55e' }}>All services up to date</p>
-              <p style={{ fontSize: 13, color: '#888', marginTop: 2 }}>Your car is looking good!</p>
+              <p style={{ fontSize: 15, fontWeight: 600, color: '#16A34A' }}>All services up to date</p>
+              <p style={{ fontSize: 13, color: '#666666', marginTop: 2 }}>Your car is looking good!</p>
             </div>
           </div>
         </div>
@@ -258,21 +270,21 @@ export default function HomePage() {
 
       {/* Quick actions */}
       <div style={{ padding: '0 20px' }}>
-        <p style={{ fontSize: 13, fontWeight: 600, color: '#888', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10 }}>Quick Actions</p>
+        <p style={{ fontSize: 12, fontWeight: 600, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Quick Actions</p>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          <Link href="/services" style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 14, padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: '#ff6b2b22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <CheckCircle size={18} color="#ff6b2b" />
+          <Link href="/services" style={{ background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: 8, boxShadow: 'var(--shadow-card)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: '#F2FFD6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <CheckCircle size={20} color="#6B8F0E" />
             </div>
-            <p style={{ fontSize: 14, fontWeight: 600, color: '#f5f5f5' }}>Log Service</p>
-            <p style={{ fontSize: 12, color: '#888' }}>Mark as done</p>
+            <p style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>Log Service</p>
+            <p style={{ fontSize: 12, color: '#666666' }}>Mark as done</p>
           </Link>
-          <Link href="/fuel" style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 14, padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: '#3b82f622', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Fuel size={18} color="#3b82f6" />
+          <Link href="/fuel" style={{ background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: 8, boxShadow: 'var(--shadow-card)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Fuel size={20} color="#3B82F6" />
             </div>
-            <p style={{ fontSize: 14, fontWeight: 600, color: '#f5f5f5' }}>Log Fuel</p>
-            <p style={{ fontSize: 12, color: '#888' }}>Track fill-ups</p>
+            <p style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>Log Fuel</p>
+            <p style={{ fontSize: 12, color: '#666666' }}>Track fill-ups</p>
           </Link>
         </div>
       </div>
