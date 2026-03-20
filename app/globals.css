@@ -187,9 +187,13 @@
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 16px); }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #D5D5D0; border-radius: 2px; }
+
+/* Hide horizontal scrollbar but keep scroll */
+.scroll-x-hidden::-webkit-scrollbar { display: none; }
+.scroll-x-hidden { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* Sheet slide-up animation */
 @keyframes sheetSlideUp {

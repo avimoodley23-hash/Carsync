@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase, Vehicle, Reminder, ServiceType } from '@/lib/supabase'
 import { calculateStatus } from '@/lib/reminders'
-import { AlertTriangle, Clock, CheckCircle, Plus, Fuel, ChevronRight, Bell, Gauge } from 'lucide-react'
+import { AlertTriangle, Clock, CheckCircle, Fuel, ChevronRight, Bell, Gauge, Wrench, BarChart2, ChevronDown } from 'lucide-react'
 import WeeklyCheckin from '@/components/WeeklyCheckin'
 import { registerPushNotifications } from '@/lib/push'
 import { toast } from 'sonner'
@@ -12,28 +12,35 @@ import { toast } from 'sonner'
 type ReminderFull = Reminder & { service_types: ServiceType }
 
 function HealthRing({ score }: { score: number }) {
-  const r = 70
+  const r = 64
   const circ = 2 * Math.PI * r
   const offset = circ - (score / 100) * circ
-  const color = score >= 75 ? '#16A34A' : score >= 40 ? '#D97706' : '#DC2626'
   const strokeColor = score >= 75 ? '#22C55E' : score >= 40 ? '#F59E0B' : '#EF4444'
+  const textColor = score >= 75 ? '#16A34A' : score >= 40 ? '#D97706' : '#DC2626'
   const label = score >= 75 ? 'Great shape' : score >= 40 ? 'Needs attention' : 'Action required'
+  const trend = score >= 75 ? '↑ On track' : score >= 40 ? '↗ Improving' : '↓ Act now'
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px 0 16px' }}>
-      <div style={{ position: 'relative', width: 180, height: 180 }}>
-        <svg width="180" height="180" style={{ transform: 'rotate(-90deg)' }}>
-          <circle cx="90" cy="90" r={r} fill="none" stroke="#E8E8E3" strokeWidth="14" />
-          <circle cx="90" cy="90" r={r} fill="none" stroke={strokeColor} strokeWidth="14"
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '4px 0 12px' }}>
+      <div style={{ position: 'relative', width: 176, height: 176 }}>
+        <svg width="176" height="176" style={{ transform: 'rotate(-90deg)' }}>
+          <circle cx="88" cy="88" r={r} fill="none" stroke="#E8E8E3" strokeWidth="12" />
+          <circle cx="88" cy="88" r={r} fill="none" stroke={strokeColor} strokeWidth="12"
             strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
-            style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1), stroke 0.5s ease', filter: `drop-shadow(0 0 10px ${strokeColor}44)` }}
+            style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1), stroke 0.5s ease', filter: `drop-shadow(0 0 12px ${strokeColor}55)` }}
           />
         </svg>
         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: 44, fontWeight: 700, color, lineHeight: 1 }}>{score}</span>
-          <span style={{ fontSize: 12, color: '#999999', marginTop: 2 }}>/ 100</span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 2 }}>
+            <span style={{ fontSize: 56, fontWeight: 800, color: textColor, lineHeight: 1, letterSpacing: '-2px' }}>{score}</span>
+            <span style={{ fontSize: 18, fontWeight: 700, color: textColor }}>%</span>
+          </div>
+          <span style={{ fontSize: 11, color: '#999999', marginTop: 2 }}>health</span>
         </div>
       </div>
-      <span style={{ fontSize: 14, fontWeight: 600, color, marginTop: 4, letterSpacing: '0.02em' }}>{label}</span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 2 }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: textColor }}>{label}</span>
+        <span style={{ fontSize: 11, background: `${strokeColor}22`, color: textColor, padding: '2px 8px', borderRadius: 20, fontWeight: 600 }}>{trend}</span>
+      </div>
     </div>
   )
 }
@@ -117,66 +124,93 @@ export default function HomePage() {
   const urgent = reminders.filter(r => r.status === 'overdue' || r.status === 'due')
     .sort((a, b) => (a.status === 'overdue' ? -1 : 1)).slice(0, 4)
 
+  // Derive first name from email
+  const firstName = user?.user_metadata?.full_name?.split(' ')[0]
+    || user?.email?.split('@')[0]?.replace(/[._-]/g, ' ')?.split(' ')[0]
+    || 'there'
+  const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
+
   if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999999' }}>Loading...</div>
 
   return (
-    <div style={{ minHeight: '100vh', paddingBottom: 100 }}>
+    <div style={{ minHeight: '100vh', paddingBottom: 110 }}>
       {/* Header */}
-      <div style={{ padding: '52px 20px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ padding: '52px 20px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
-          <p style={{ fontSize: 13, color: '#666666' }}>Your vehicle</p>
-          <p style={{ fontSize: 20, fontWeight: 700, color: '#111111', marginTop: 2 }}>
-            {vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : 'No vehicle'}
+          <p style={{ fontSize: 13, color: '#999999', fontWeight: 500 }}>Good day,</p>
+          <p style={{ fontSize: 26, fontWeight: 800, color: '#111111', lineHeight: 1.1, letterSpacing: '-0.5px' }}>
+            Hi, {displayName}! 👋
           </p>
         </div>
-        <Link href="/onboarding" style={{ width: 38, height: 38, borderRadius: 12, background: '#FFFFFF', border: '1px solid #E5E5E0', boxShadow: 'var(--shadow-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>
-          <Plus size={18} color="#666666" />
+        <Link href="/profile" style={{ textDecoration: 'none' }}>
+          <div style={{
+            width: 44, height: 44, borderRadius: '50%',
+            background: '#CBFF4D',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 2px 10px rgba(203,255,77,0.4)',
+          }}>
+            <span style={{ fontSize: 17, fontWeight: 800, color: '#111111' }}>
+              {displayName.charAt(0).toUpperCase()}
+            </span>
+          </div>
         </Link>
       </div>
 
-      {/* Vehicle tabs */}
-      {vehicles.length > 1 && (
-        <div style={{ padding: '12px 20px 0', display: 'flex', gap: 8, overflowX: 'auto' }}>
-          {vehicles.map(v => (
-            <button key={v.id} onClick={() => { setVehicle(v); loadReminders(v) }} style={{
-              padding: '6px 16px', borderRadius: 100, fontSize: 13, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0,
-              background: vehicle?.id === v.id ? '#CBFF4D' : '#FFFFFF',
-              color: vehicle?.id === v.id ? '#111111' : '#666666',
-              border: `1px solid ${vehicle?.id === v.id ? '#CBFF4D' : '#E5E5E0'}`,
-            }}>
-              {v.make} {v.model}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Health Ring */}
-      <div style={{ padding: '8px 20px 0' }}>
-        <HealthRing score={healthScore} />
+      {/* Vehicle selector */}
+      <div style={{ padding: '0 20px 16px' }}>
+        {vehicles.length > 1 ? (
+          <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
+            {vehicles.map(v => (
+              <button key={v.id} onClick={() => { setVehicle(v); loadReminders(v) }} style={{
+                padding: '6px 14px', borderRadius: 100, fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0, border: 'none',
+                background: vehicle?.id === v.id ? '#111111' : '#FFFFFF',
+                color: vehicle?.id === v.id ? '#CBFF4D' : '#666666',
+                boxShadow: vehicle?.id === v.id ? '0 2px 8px rgba(0,0,0,0.15)' : 'var(--shadow-card)',
+              }}>
+                {v.year} {v.make} {v.model}
+              </button>
+            ))}
+          </div>
+        ) : vehicle ? (
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: '#111111', borderRadius: 100, padding: '6px 14px' }}>
+            <span style={{ fontSize: 13, fontWeight: 600, color: '#CBFF4D' }}>{vehicle.year} {vehicle.make} {vehicle.model}</span>
+            <ChevronDown size={13} color="#CBFF4D" />
+          </div>
+        ) : null}
       </div>
 
-      {/* Stats */}
-      <div style={{ padding: '0 20px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 20 }}>
-        {[
-          { label: 'Overdue', value: reminders.filter(r => r.status === 'overdue').length, color: '#DC2626', border: '#FECACA' },
-          { label: 'Due soon', value: reminders.filter(r => r.status === 'due').length, color: '#D97706', border: '#FDE68A' },
-          { label: 'All good', value: reminders.filter(r => r.status === 'upcoming').length, color: '#16A34A', border: '#BBF7D0' },
-        ].map(stat => (
-          <div key={stat.label} style={{ background: '#FFFFFF', border: `1px solid ${stat.border}`, borderRadius: 16, padding: '12px 10px', textAlign: 'center', boxShadow: 'var(--shadow-card)' }}>
-            <div style={{ fontSize: 28, fontWeight: 700, color: stat.color }}>{stat.value}</div>
-            <div style={{ fontSize: 11, color: '#666666', marginTop: 2 }}>{stat.label}</div>
+      {/* Health Ring Card */}
+      <div style={{ padding: '0 20px', marginBottom: 16 }}>
+        <div style={{ background: '#FFFFFF', borderRadius: 28, border: '1px solid #E5E5E0', padding: '20px', boxShadow: 'var(--shadow-card)' }}>
+          <HealthRing score={healthScore} />
+
+          {/* Mini stats row */}
+          <div style={{ display: 'flex', borderTop: '1px solid #F0F0EB', paddingTop: 16, gap: 0 }}>
+            {[
+              { label: 'Overdue', value: reminders.filter(r => r.status === 'overdue').length, color: '#DC2626' },
+              { label: 'Due soon', value: reminders.filter(r => r.status === 'due').length, color: '#D97706' },
+              { label: 'All good', value: reminders.filter(r => r.status === 'upcoming').length, color: '#16A34A' },
+            ].map((s, i, arr) => (
+              <div key={s.label} style={{
+                flex: 1, textAlign: 'center',
+                borderRight: i < arr.length - 1 ? '1px solid #F0F0EB' : 'none',
+              }}>
+                <div style={{ fontSize: 26, fontWeight: 800, color: s.color, lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontSize: 11, color: '#999999', marginTop: 4 }}>{s.label}</div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
 
       {/* Push notification prompt */}
       {showPushPrompt && (
-        <div style={{ margin: '0 20px 16px', background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: 16, padding: '16px' }}>
+        <div style={{ margin: '0 20px 16px', background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: 20, padding: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <Bell size={16} color="#3B82F6" />
-                <p style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>Enable notifications</p>
+                <p style={{ fontSize: 14, fontWeight: 700, color: '#111111' }}>Enable notifications</p>
               </div>
               <p style={{ fontSize: 13, color: '#666666' }}>Get reminders when services are due — no spam, only what matters.</p>
               <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
@@ -190,10 +224,10 @@ export default function HomePage() {
 
       {/* Odometer nudge */}
       {showOdometerNudge && (
-        <div style={{ margin: '0 20px 16px', background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 16, padding: '16px', boxShadow: 'var(--shadow-card)' }}>
+        <div style={{ margin: '0 20px 16px', background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, padding: '16px', boxShadow: 'var(--shadow-card)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
             <Gauge size={16} color="#D97706" />
-            <p style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>Update your odometer</p>
+            <p style={{ fontSize: 14, fontWeight: 700, color: '#111111' }}>Update your odometer</p>
           </div>
           <p style={{ fontSize: 13, color: '#666666', marginBottom: 12 }}>
             Current: <strong style={{ color: '#111111' }}>{vehicle?.current_odometer.toLocaleString()} km</strong> — keep it accurate for better reminders
@@ -207,46 +241,45 @@ export default function HomePage() {
               style={{ flex: 1 }}
               placeholder="New km reading"
             />
-            <button onClick={handleOdometerUpdate} disabled={savingOdo} style={{ padding: '0 16px', background: '#CBFF4D', border: 'none', borderRadius: 10, color: '#111111', fontSize: 14, fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>
+            <button onClick={handleOdometerUpdate} disabled={savingOdo} style={{ padding: '0 16px', background: '#CBFF4D', border: 'none', borderRadius: 12, color: '#111111', fontSize: 14, fontWeight: 700, cursor: 'pointer', flexShrink: 0 }}>
               {savingOdo ? '...' : 'Update'}
             </button>
-            <button onClick={() => setShowOdometerNudge(false)} style={{ padding: '0 12px', background: 'transparent', border: '1px solid #E5E5E0', borderRadius: 10, color: '#666666', fontSize: 13, cursor: 'pointer' }}>
+            <button onClick={() => setShowOdometerNudge(false)} style={{ padding: '0 12px', background: 'transparent', border: '1px solid #E5E5E0', borderRadius: 12, color: '#666666', fontSize: 13, cursor: 'pointer' }}>
               Skip
             </button>
           </div>
         </div>
       )}
 
-      {/* Weekly check-in */}
-      {vehicle && user && <WeeklyCheckin vehicleId={vehicle.id} userId={user.id} />}
-
-      {/* Urgent items */}
+      {/* Urgent alert cards */}
       {urgent.length > 0 && (
         <div style={{ padding: '0 20px', marginBottom: 20 }}>
-          <p style={{ fontSize: 12, fontWeight: 600, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Needs Attention</p>
+          <p style={{ fontSize: 11, fontWeight: 700, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Needs Attention</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {urgent.map(r => {
               const isOverdue = r.status === 'overdue'
-              const color = isOverdue ? '#EF4444' : '#F59E0B'
+              const accentColor = isOverdue ? '#EF4444' : '#F59E0B'
               const textColor = isOverdue ? '#DC2626' : '#D97706'
               const bgColor = isOverdue ? '#FEF2F2' : '#FFFBEB'
-              const borderColor = isOverdue ? '#FECACA' : '#FDE68A'
               const Icon = isOverdue ? AlertTriangle : Clock
               return (
                 <Link key={r.id} href="/services" style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  display: 'flex', alignItems: 'center', gap: 14,
                   padding: '14px 16px', borderRadius: 20, textDecoration: 'none',
-                  background: '#FFFFFF', border: `1px solid ${borderColor}`,
+                  background: '#FFFFFF',
+                  borderLeft: `4px solid ${accentColor}`,
+                  border: `1px solid ${isOverdue ? '#FECACA' : '#FDE68A'}`,
+                  borderLeftWidth: 4,
                   boxShadow: 'var(--shadow-card)',
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <div style={{ width: 40, height: 40, borderRadius: 12, background: bgColor, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <Icon size={20} color={color} />
-                    </div>
-                    <div>
-                      <p style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>{r.service_types?.name}</p>
-                      <p style={{ fontSize: 12, color: textColor, marginTop: 1 }}>{isOverdue ? 'Overdue' : 'Due soon'}{r.service_types?.is_critical ? ' · Critical' : ''}</p>
-                    </div>
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: bgColor, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Icon size={20} color={accentColor} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: '#111111' }}>{r.service_types?.name}</p>
+                    <p style={{ fontSize: 12, color: textColor, marginTop: 2, fontWeight: 600 }}>
+                      {isOverdue ? 'Overdue' : 'Due soon'}{r.service_types?.is_critical ? ' · Critical' : ''}
+                    </p>
                   </div>
                   <ChevronRight size={16} color="#CCCCCC" />
                 </Link>
@@ -258,34 +291,47 @@ export default function HomePage() {
 
       {urgent.length === 0 && (
         <div style={{ padding: '0 20px', marginBottom: 20 }}>
-          <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 20, padding: '20px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: 'var(--shadow-card)' }}>
-            <CheckCircle size={24} color="#22C55E" />
+          <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 20, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: 'var(--shadow-card)' }}>
+            <div style={{ width: 40, height: 40, borderRadius: 12, background: '#DCFCE7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <CheckCircle size={22} color="#22C55E" />
+            </div>
             <div>
-              <p style={{ fontSize: 15, fontWeight: 600, color: '#16A34A' }}>All services up to date</p>
+              <p style={{ fontSize: 14, fontWeight: 700, color: '#16A34A' }}>All services up to date</p>
               <p style={{ fontSize: 13, color: '#666666', marginTop: 2 }}>Your car is looking good!</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Quick actions */}
-      <div style={{ padding: '0 20px' }}>
-        <p style={{ fontSize: 12, fontWeight: 600, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>Quick Actions</p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-          <Link href="/services" style={{ background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: 8, boxShadow: 'var(--shadow-card)' }}>
-            <div style={{ width: 40, height: 40, borderRadius: 12, background: '#F2FFD6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <CheckCircle size={20} color="#6B8F0E" />
-            </div>
-            <p style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>Log Service</p>
-            <p style={{ fontSize: 12, color: '#666666' }}>Mark as done</p>
-          </Link>
-          <Link href="/fuel" style={{ background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20, padding: '16px', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: 8, boxShadow: 'var(--shadow-card)' }}>
-            <div style={{ width: 40, height: 40, borderRadius: 12, background: '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Fuel size={20} color="#3B82F6" />
-            </div>
-            <p style={{ fontSize: 14, fontWeight: 600, color: '#111111' }}>Log Fuel</p>
-            <p style={{ fontSize: 12, color: '#666666' }}>Track fill-ups</p>
-          </Link>
+      {/* Weekly check-in */}
+      {vehicle && user && <WeeklyCheckin vehicleId={vehicle.id} userId={user.id} />}
+
+      {/* Quick actions — horizontal scroll */}
+      <div style={{ marginBottom: 20 }}>
+        <p style={{ fontSize: 11, fontWeight: 700, color: '#999999', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10, padding: '0 20px' }}>Quick Actions</p>
+        <div style={{ display: 'flex', gap: 12, overflowX: 'auto', padding: '4px 20px 8px', scrollbarWidth: 'none' }}>
+          {[
+            { href: '/services', icon: Wrench, label: 'Log Service', sub: 'Mark as done', iconBg: '#F2FFD6', iconColor: '#6B8F0E' },
+            { href: '/fuel', icon: Fuel, label: 'Log Fuel', sub: 'Track fill-ups', iconBg: '#EFF6FF', iconColor: '#3B82F6' },
+            { href: '/insights', icon: BarChart2, label: 'Insights', sub: 'View spend', iconBg: '#FEF9EC', iconColor: '#D97706' },
+            { href: '/profile', icon: CheckCircle, label: 'Profile', sub: 'Settings', iconBg: '#F0FDF4', iconColor: '#16A34A' },
+          ].map(({ href, icon: Icon, label, sub, iconBg, iconColor }) => (
+            <Link key={href} href={href} style={{
+              background: '#FFFFFF', border: '1px solid #E5E5E0', borderRadius: 20,
+              padding: '16px', textDecoration: 'none',
+              display: 'flex', flexDirection: 'column', gap: 10,
+              boxShadow: 'var(--shadow-card)',
+              minWidth: 130, flexShrink: 0,
+            }}>
+              <div style={{ width: 44, height: 44, borderRadius: 14, background: iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Icon size={22} color={iconColor} />
+              </div>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, color: '#111111' }}>{label}</p>
+                <p style={{ fontSize: 12, color: '#999999', marginTop: 2 }}>{sub}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
